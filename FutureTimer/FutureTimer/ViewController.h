@@ -7,8 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Draw2DView.h"
 
 @interface ViewController : UIViewController
+
+@property (strong, nonatomic) Draw2DView *clockView;
+
+@property (assign,nonatomic) uint h;
+@property (assign,nonatomic) uint m;
+
+@property (strong,nonatomic) NSTimer *clockTimer;
 
 
 @end
