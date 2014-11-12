@@ -54,7 +54,7 @@
         if (_minutes < 10) {
             [_lbl_time setText:[NSString stringWithFormat:@"%i : 0%i ",_hours, _minutes]];
         } else {
-            [_lbl_time setText:[NSString stringWithFormat:@"0i : %i ",_hours, _minutes]];
+            [_lbl_time setText:[NSString stringWithFormat:@"%i : %i ",_hours, _minutes]];
         }
     }
     
