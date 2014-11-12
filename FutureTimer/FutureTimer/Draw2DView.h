@@ -7,29 +7,23 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Constans.h"
 
 @interface Draw2DView : UIView
 
-@property (assign,nonatomic) uint h;
-@property (assign,nonatomic) uint m;
+
+@property (assign, nonatomic) uint hours;
+@property (assign, nonatomic) uint minutes;
 
 @property (strong,nonatomic) NSTimer *clockTimer;
+@property (assign, nonatomic) CGFloat radiusMax;
+
+@property (strong, nonatomic) UILabel *lbl_time;
+@property (strong, nonatomic) UILabel *lbl_hours;
+
+//Method definitions
+- (id)initClockWithFrame:(CGRect)frame andHours: (uint)hours andMiuntes:(uint)minutes;
 
 
-
-- (void) drawFilledHours: (CGContextRef) mycontext withStartPoint: (CGPoint) startPoint radius: (CGFloat) r andFilledHours: (uint) hours;
-
-- (void) drawEmptyHours: (CGContextRef) mycontext withStartPoint: (CGPoint) startPoint radius: (CGFloat) radius andEmptyHours: (uint) hour;
-
-- (void)drawFilledMiutes: (CGContextRef) mycontext withStartPoint: (CGPoint) startPoint radius: (CGFloat) r andFilledMiutes: (uint) minutes;
-
-- (void)drawEmptyMiutes: (CGContextRef) mycontext withStartPoint: (CGPoint) startPoint radius: (CGFloat) r andFilledMiutes: (uint) minutes;
-
-- (void) drawMiutesLeft:(uint) miutes withContext: (CGContextRef) context;
-
-- (void) setInnerTextNumbersWithRadius: (CGFloat) radius andContext: (CGContextRef) context;
-- (void) setOuterTextNumbersWithRadius: (CGFloat) radius andContext: (CGContextRef) context;
-
-- (void) drawClockWithContext:(CGContextRef) context hoursLeft: (uint)hours andMinutesLeft: (uint)minutes;
 
 @end

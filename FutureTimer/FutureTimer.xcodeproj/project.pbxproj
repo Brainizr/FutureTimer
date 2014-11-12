@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FF0F58BA199AC53300211BD5 /* Draw2DView.m in Sources */ = {isa = PBXBuildFile; fileRef = FF0F58B9199AC53300211BD5 /* Draw2DView.m */; };
 		FF541F75199ABDC30012B569 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FF541F74199ABDC30012B569 /* main.m */; };
 		FF541F78199ABDC30012B569 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FF541F77199ABDC30012B569 /* AppDelegate.m */; };
 		FF541F7B199ABDC30012B569 /* FutureTimer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FF541F79199ABDC30012B569 /* FutureTimer.xcdatamodeld */; };
@@ -14,6 +15,8 @@
 		FF541F81199ABDC30012B569 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FF541F7F199ABDC30012B569 /* Main.storyboard */; };
 		FF541F83199ABDC30012B569 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FF541F82199ABDC30012B569 /* Images.xcassets */; };
 		FF541F8F199ABDC40012B569 /* FutureTimerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FF541F8E199ABDC40012B569 /* FutureTimerTests.m */; };
+		FF5BA2BD1A13BFC70053C48C /* Exo 500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FF5BA2BC1A13BFC70053C48C /* Exo 500.ttf */; };
+		FF5BA2BE1A13BFC70053C48C /* Exo 500.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FF5BA2BC1A13BFC70053C48C /* Exo 500.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,6 +30,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		FF0F58B8199AC53300211BD5 /* Draw2DView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Draw2DView.h; sourceTree = "<group>"; };
+		FF0F58B9199AC53300211BD5 /* Draw2DView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Draw2DView.m; sourceTree = "<group>"; };
 		FF541F6F199ABDC30012B569 /* FutureTimer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FutureTimer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF541F73199ABDC30012B569 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FF541F74199ABDC30012B569 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -40,6 +45,8 @@
 		FF541F88199ABDC40012B569 /* FutureTimerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FutureTimerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF541F8D199ABDC40012B569 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FF541F8E199ABDC40012B569 /* FutureTimerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FutureTimerTests.m; sourceTree = "<group>"; };
+		FF5BA2BB1A13BF720053C48C /* Constans.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constans.h; sourceTree = "<group>"; };
+		FF5BA2BC1A13BFC70053C48C /* Exo 500.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Exo 500.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,10 +88,13 @@
 		FF541F71199ABDC30012B569 /* FutureTimer */ = {
 			isa = PBXGroup;
 			children = (
+				FF5BA2BB1A13BF720053C48C /* Constans.h */,
 				FF541F76199ABDC30012B569 /* AppDelegate.h */,
 				FF541F77199ABDC30012B569 /* AppDelegate.m */,
 				FF541F7C199ABDC30012B569 /* ViewController.h */,
 				FF541F7D199ABDC30012B569 /* ViewController.m */,
+				FF0F58B8199AC53300211BD5 /* Draw2DView.h */,
+				FF0F58B9199AC53300211BD5 /* Draw2DView.m */,
 				FF541F7F199ABDC30012B569 /* Main.storyboard */,
 				FF541F82199ABDC30012B569 /* Images.xcassets */,
 				FF541F79199ABDC30012B569 /* FutureTimer.xcdatamodeld */,
@@ -96,6 +106,7 @@
 		FF541F72199ABDC30012B569 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				FF5BA2BC1A13BFC70053C48C /* Exo 500.ttf */,
 				FF541F73199ABDC30012B569 /* Info.plist */,
 				FF541F74199ABDC30012B569 /* main.m */,
 			);
@@ -199,6 +210,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF5BA2BD1A13BFC70053C48C /* Exo 500.ttf in Resources */,
 				FF541F81199ABDC30012B569 /* Main.storyboard in Resources */,
 				FF541F83199ABDC30012B569 /* Images.xcassets in Resources */,
 			);
@@ -208,6 +220,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF5BA2BE1A13BFC70053C48C /* Exo 500.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -222,6 +235,7 @@
 				FF541F7B199ABDC30012B569 /* FutureTimer.xcdatamodeld in Sources */,
 				FF541F7E199ABDC30012B569 /* ViewController.m in Sources */,
 				FF541F75199ABDC30012B569 /* main.m in Sources */,
+				FF0F58BA199AC53300211BD5 /* Draw2DView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -410,6 +424,7 @@
 				FF541F94199ABDC40012B569 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		FF541F95199ABDC40012B569 /* Build configuration list for PBXNativeTarget "FutureTimerTests" */ = {
 			isa = XCConfigurationList;
@@ -418,6 +433,7 @@
 				FF541F97199ABDC40012B569 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

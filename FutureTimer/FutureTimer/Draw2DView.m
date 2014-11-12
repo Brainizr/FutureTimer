@@ -13,62 +13,87 @@
 
 @implementation Draw2DView
 
-@synthesize h = _h;
-@synthesize m = _m;
-
+@synthesize hours = _hours;
+@synthesize minutes = _minutes;
 @synthesize clockTimer = _clockTimer;
+@synthesize radiusMax = _radiusMax;
+
+@synthesize lbl_hours = _lbl_hours;
+@synthesize lbl_time = _lbl_time;
 
 
-- (id)initWithFrame:(CGRect)frame
-{
+-(id)initClockWithFrame:(CGRect)frame andHours: (uint)hours andMiuntes:(uint)minutes {
+    
     self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
+    [self setBackgroundColor:[UIColor clearColor]];
+    _hours = hours;
+    _minutes = minutes;
+    
+    _radiusMax = (self.frame.size.width <= self.frame.size.height) ? self.frame.size.width/2 : self.frame.size.height/2;
+    
+    _lbl_time = [[UILabel alloc] initWithFrame:CGRectMake(_radiusMax*0.77, _radiusMax*1.3, _radiusMax*0.45, _radiusMax*0.09)];
+    _lbl_hours = [[UILabel alloc] initWithFrame:CGRectMake(_radiusMax*0.77, _radiusMax*1.3+_radiusMax*0.09, _radiusMax*0.45, _radiusMax*0.09)];
+    
+    [_lbl_time setFont:[UIFont fontWithName:@"Exo-Medium" size:_radiusMax*0.1]];
+    [_lbl_hours setFont:[UIFont fontWithName:@"Exo-Medium" size:_radiusMax*0.09]];
+    
+    [_lbl_time setTextAlignment:NSTextAlignmentCenter];
+    [_lbl_hours setTextAlignment:NSTextAlignmentCenter];
+    
+    
+    if (_hours < 10) {
         
-       
+        if (_minutes < 10) {
+            [_lbl_time setText:[NSString stringWithFormat:@"0%i : 0%i ",_hours, _minutes]];
+        } else {
+            [_lbl_time setText:[NSString stringWithFormat:@"0%i : %i ",_hours, _minutes]];
+        }
+        
+        
+    } else {
+        if (_minutes < 10) {
+            [_lbl_time setText:[NSString stringWithFormat:@"%i : 0%i ",_hours, _minutes]];
+        } else {
+            [_lbl_time setText:[NSString stringWithFormat:@"0i : %i ",_hours, _minutes]];
+        }
     }
+    
+    [_lbl_hours setText:@"Stunden"];
+    
+    [self addSubview:_lbl_hours];
+    [self addSubview:_lbl_time];
+    
+
+    
     return self;
+    
 }
 
 
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
+// Override drawRect to perform custom drawing.
 - (void)drawRect:(CGRect)rect
 {
-   
-    // Drawing code:
-    ////////////////
-    // In order to draw a line on an iPhone screen using Quartz 2D we first need to obtain the graphics context for the view:
+    // The Context
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     // Anti-Aliasing
     CGContextSetAllowsAntialiasing(context, true);
-    
-    CGContextSetLineWidth(context, 2.0);
-    
-    
-    // Next need to create a color reference. We can do this by specifying the RGBA components of the required color:
-    CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
-    CGFloat components[] = {0.0, 0.0, 1.0, 1.0};
-    CGColorRef color = CGColorCreate(colorspace, components);
-    
-    // Using the color reference and the context we can now specify that the color is to be used when drawing the line:
-    CGContextSetStrokeColorWithColor(context, color);
-    
+
     // Draw
-    [self drawClockWithContext:context hoursLeft:self.h andMinutesLeft:self.m];
+    [self drawClockWithContext:context];
   
 }
 
 
 /* Draw the filled hour-items and then trigger the method to draw the empty hour-items */
-- (void) drawFilledHours: (CGContextRef) mycontext withStartPoint: (CGPoint) startPoint radius: (CGFloat) radius andFilledHours: (uint) hours {
+- (void) drawFilledHourswithContext: (CGContextRef) mycontext {
     
+    CGFloat hourRadius = _radiusMax / 2.5;
+    CGPoint startPoint = CGPointMake(_radiusMax, _radiusMax);
+    CGFloat coverage = 2 * M_PI * hourRadius;
+    CGFloat lineWidth = _radiusMax * 0.18;
     
-    CGFloat coverage = 2 * M_PI * radius;
-    CGFloat lineWidth = 30.0;
-    
-    uint itemsCount = (hours * 2);
+    uint itemsCount = (_hours%12 == 0) ? 24 : (12-_hours)*2;
     
     
     CGFloat paddings = coverage/4 * 0.084;
@@ -82,13 +107,13 @@
     
     CGContextMoveToPoint(mycontext, startPoint.x, startPoint.x);
     
-    CGContextAddArcToPoint(mycontext, startPoint.x-radius,startPoint.y, startPoint.x-radius,startPoint.y+radius, radius);
+    CGContextAddArcToPoint(mycontext, startPoint.x-hourRadius,startPoint.y, startPoint.x-hourRadius,startPoint.y+hourRadius, hourRadius);
     
-    CGContextAddArcToPoint(mycontext, startPoint.x-radius,startPoint.y+(2*radius), startPoint.x,startPoint.y+(2*radius), radius);
+    CGContextAddArcToPoint(mycontext, startPoint.x-hourRadius,startPoint.y+(2*hourRadius), startPoint.x,startPoint.y+(2*hourRadius), hourRadius);
     
-    CGContextAddArcToPoint(mycontext, startPoint.x+radius,startPoint.y+(2*radius), startPoint.x+radius,startPoint.y+radius, radius);
+    CGContextAddArcToPoint(mycontext, startPoint.x+hourRadius,startPoint.y+(2*hourRadius), startPoint.x+hourRadius,startPoint.y+hourRadius, hourRadius);
     
-    CGContextAddArcToPoint(mycontext, startPoint.x+radius,startPoint.y, startPoint.x,startPoint.y, radius);
+    CGContextAddArcToPoint(mycontext, startPoint.x+hourRadius,startPoint.y, startPoint.x,startPoint.y, hourRadius);
     
     
     CGFloat dashArray[itemsCount];
@@ -101,49 +126,55 @@
         dashArray[j] = segPadding;
     }
     
-    if (hours != 12) {
+    if (!(_hours == 12 || _hours == 0)) {
         uint filledItems = (itemsCount-1)/2;
         dashArray[itemsCount-1] = coverage-((filledItems*segPadding)+(filledItems*segWidth));
         
-        
     } else {
-        dashArray[itemsCount-1] = segPadding;
+        
+        if (_hours == 0) {
+            dashArray[itemsCount-1] = segPadding;
+        }
+        
+        
     }
-
+    
     CGContextSetLineDash(mycontext, -segPadding/2, dashArray, itemsCount);
     CGContextStrokePath(mycontext);
+
+    
+    
 
     
 }
 
 
-/* Draw the filled hour-items */
-- (void) drawEmptyHours: (CGContextRef) mycontext withStartPoint: (CGPoint) startPoint radius: (CGFloat) radius andEmptyHours: (uint) hours {
+/* Draw the empty hour-items */
+- (void) drawHoursWithContext: (CGContextRef) mycontext {
     
+    CGFloat hourRadius = _radiusMax / 2.5;
+    CGPoint startPoint = CGPointMake(_radiusMax, _radiusMax);
+    CGFloat coverage = 2 * M_PI * hourRadius;
+    CGFloat lineWidth = _radiusMax * 0.18;
     
-    CGFloat coverage = 2 * M_PI * radius;
-    CGFloat lineWidth = 30.0;
-    
-    uint itemsCount = (hours * 2);
-    
+    uint itemsCount = (_hours%12 == 0) ? 24 : _hours*2;
     
     CGFloat paddings = coverage/4 * 0.084;
     CGFloat segPadding = (coverage/4 * 0.084) / 3;
     CGFloat segWidth = (coverage/4 - paddings) / 3;
     
     CGContextSetLineWidth(mycontext, lineWidth);
-    CGContextSetStrokeColorWithColor(mycontext,
-                                     [UIColor colorWithRed:0.933 green:0.933 blue:0.933 alpha:1].CGColor);
+    CGContextSetStrokeColorWithColor(mycontext,color_color_gray_lighten.CGColor); /*#eeeeee*/
     
     
     CGContextMoveToPoint(mycontext, startPoint.x, startPoint.y);
-    CGContextAddArcToPoint(mycontext, startPoint.x+radius,startPoint.y, startPoint.x+radius,startPoint.y+radius, radius);
+    CGContextAddArcToPoint(mycontext, startPoint.x+hourRadius,startPoint.y, startPoint.x+hourRadius,startPoint.y+hourRadius, hourRadius);
     
-    CGContextAddArcToPoint(mycontext, startPoint.x+radius,startPoint.y+(2*radius), startPoint.x,startPoint.y+(2*radius), radius);
+    CGContextAddArcToPoint(mycontext, startPoint.x+hourRadius,startPoint.y+(2*hourRadius), startPoint.x,startPoint.y+(2*hourRadius), hourRadius);
     
-    CGContextAddArcToPoint(mycontext, startPoint.x-radius,startPoint.y+(2*radius), startPoint.x-radius,startPoint.y+radius, radius);
+    CGContextAddArcToPoint(mycontext, startPoint.x-hourRadius,startPoint.y+(2*hourRadius), startPoint.x-hourRadius,startPoint.y+hourRadius, hourRadius);
     
-    CGContextAddArcToPoint(mycontext, startPoint.x-radius,startPoint.y, startPoint.x,startPoint.y, radius);
+    CGContextAddArcToPoint(mycontext, startPoint.x-hourRadius,startPoint.y, startPoint.x,startPoint.y, hourRadius);
     
     
     CGFloat dashArray[itemsCount];
@@ -156,20 +187,24 @@
         dashArray[j] = segPadding;
     }
     
-    if (hours != 12) {
+    if (!(_hours == 12 || _hours == 0)) {
+        
         uint filledItems = (itemsCount-1)/2;
         dashArray[itemsCount-1] = coverage-((filledItems*segPadding)+(filledItems*segWidth));
         
         CGContextSetLineDash(mycontext, -segPadding/2, dashArray, itemsCount);
         CGContextStrokePath(mycontext);
         
-        // Trigger the drawEmptyHours method
-        [self drawFilledHours:mycontext withStartPoint:startPoint radius:radius andFilledHours:12-hours];
     } else {
-        dashArray[itemsCount-1] = segPadding;
-        CGContextSetLineDash(mycontext, -segPadding/2, dashArray, itemsCount);
-        CGContextStrokePath(mycontext);
+        
+        if (_hours == 12) {
+            dashArray[itemsCount-1] = segPadding;
+            CGContextSetLineDash(mycontext, -segPadding/2, dashArray, itemsCount);
+            CGContextStrokePath(mycontext);
+        }
+        
     }
+
     
     
     
@@ -185,7 +220,7 @@
     
     
     CGFloat coverage = 2 * M_PI * r;
-    CGFloat lineWidth = 35.0;
+    CGFloat lineWidth = _radiusMax * 0.2;
     
     CGFloat paddings = coverage/4 * 0.06; // 0.06 Padding-Big
     CGFloat segPadding = paddings / 3;
@@ -201,7 +236,7 @@
     CGContextSetLineWidth(mycontext, lineWidth);
     CGContextSetStrokeColorWithColor(mycontext,
                                      [UIColor colorWithRed:0.937 green:0.694 blue:0.439 alpha:1].CGColor);
-    CGContextTranslateCTM(mycontext, 0, -r/2);
+    CGContextTranslateCTM(mycontext, 0, -(_radiusMax*0.68 - _radiusMax/2.5));
     
     CGContextMoveToPoint(mycontext, startPoint.x, startPoint.y);
     
@@ -267,7 +302,7 @@
     
     
     CGFloat coverage = 2 * M_PI * r;
-    CGFloat lineWidth = 35.0;
+    CGFloat lineWidth = _radiusMax * 0.2;
     
     CGFloat paddings = coverage/4 * 0.06; // 0.06 Padding-Big
     CGFloat segPadding = paddings / 3;
@@ -345,15 +380,15 @@
     for (int i = 0; i < 12; i++)
     {
         NSString *letter = [myLetters objectAtIndex:i];
-        CGSize letterSize = [letter sizeWithAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Exo" size:8.0]}];
+        CGSize letterSize = [letter sizeWithAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Exo-Medium" size:_radiusMax*0.05]}];
         
-        CGPoint center = CGPointMake(160, 260);
+        CGPoint center = CGPointMake(_radiusMax, _radiusMax+_radiusMax*0.68);
         
         CGFloat theta = M_PI - i * (2 * M_PI / 12.0);
         CGFloat x = center.x + (radius) * sin(theta) - letterSize.width / 2.0;
         CGFloat y = center.y + (radius) * cos(theta) - letterSize.height / 2.0;
         
-        [letter drawAtPoint:CGPointMake(x, y) withAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Exo" size:8.0]}];
+        [letter drawAtPoint:CGPointMake(x, y) withAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Exo-Medium" size:_radiusMax*0.05]}];
     }
 }
 
@@ -364,65 +399,43 @@
     for (int i = 0; i < 12; i++)
     {
         NSString *letter = [myLetters_big objectAtIndex:i];
-        CGSize letterSize = [letter sizeWithAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Helvetica Neue" size:11.0]}];
+        CGSize letterSize = [letter sizeWithAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Exo-Medium" size:_radiusMax*0.07]}];
         
-        CGPoint center = CGPointMake(160, 260);
+        CGPoint center = CGPointMake(_radiusMax, _radiusMax+_radiusMax*0.68);
         
         CGFloat theta = M_PI - i * (2 * M_PI / 12.0);
         CGFloat x = center.x + (radius) * sin(theta) - letterSize.width / 2.0;
         CGFloat y = center.y + (radius) * cos(theta) - letterSize.height / 2.0;
         
-        [letter drawAtPoint:CGPointMake(x, y) withAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Exo" size:11.0]}];
+        [letter drawAtPoint:CGPointMake(x, y) withAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Exo-Medium" size:_radiusMax*0.07]}];
     }
 }
 
 
-- (void) drawMiutesLeft:(uint) miutes withContext: (CGContextRef) context {
-    
-    
-    if (miutes == 0) {
-//        CGContextTranslateCTM(context, 0, -50);
-        [self drawFilledMiutes:context withStartPoint:CGPointMake(160.0, 160.0) radius:100.0 andFilledMiutes:60];
-        
-    } else {
-        [self drawFilledMiutes:context withStartPoint:CGPointMake(160.0, 160.0) radius:100.0 andFilledMiutes:60-miutes];
-        
-        [self drawEmptyMiutes:context withStartPoint:CGPointMake(160.0, 160.0) radius:100.0 andFilledMiutes:miutes];
-    }
-    
-    
-    
-}
 
 
-- (void) drawClockWithContext:(CGContextRef) context hoursLeft: (uint)hours andMinutesLeft: (uint)minutes {
-    
-    [self drawEmptyHours:context withStartPoint:CGPointMake(160.0, 160.0) radius:50.0 andEmptyHours:hours];
-    [self drawMiutesLeft:minutes withContext:context];
+
+- (void) drawClockWithContext:(CGContextRef) context {
     
     
-    [self setInnerTextNumbersWithRadius:72.0 andContext:context];
-    [self setOuterTextNumbersWithRadius:128.0 andContext:context];
+    [self drawHoursWithContext:context];
+    [self drawFilledHourswithContext:context];
     
-    
-    if (hours < 10) {
-        
-        if (minutes < 10) {
-            [[NSString stringWithFormat:@"0%i : 0%i ",hours, minutes] drawAtPoint:CGPointMake(138, 245) withAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Exo" size:14.0]}];
-        } else {
-            [[NSString stringWithFormat:@"0%i : %i ",hours, minutes] drawAtPoint:CGPointMake(138, 245) withAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Exo" size:14.0]}];
-        }
-        
+    if (_minutes == 0) {
+        [self drawFilledMiutes:context withStartPoint:CGPointMake(_radiusMax, _radiusMax) radius:_radiusMax*0.68 andFilledMiutes:60];
         
     } else {
-        if (minutes < 10) {
-            [[NSString stringWithFormat:@"%i : 0%i ",hours, minutes] drawAtPoint:CGPointMake(138, 245) withAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Exo" size:14.0]}];
-        } else {
-            [[NSString stringWithFormat:@"%i : %i ",hours, minutes] drawAtPoint:CGPointMake(138, 245) withAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Exo" size:14.0]}];
-        }
+        [self drawFilledMiutes:context withStartPoint:CGPointMake(_radiusMax, _radiusMax) radius:_radiusMax*0.68 andFilledMiutes:60-_minutes];
+        
+        [self drawEmptyMiutes:context withStartPoint:CGPointMake(_radiusMax, _radiusMax) radius:_radiusMax*0.68 andFilledMiutes:_minutes];
     }
+
     
-    [@"Stunden" drawAtPoint:CGPointMake(134, 259) withAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Exo" size:15.0]}];
+    [self setInnerTextNumbersWithRadius:_radiusMax/1.9 andContext:context];
+    [self setOuterTextNumbersWithRadius:_radiusMax/1.19 andContext:context];
+    
+    
+//    [@"Stunden" drawAtPoint:CGPointMake(134, (_radiusMax*1.57)+14.0) withAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Exo-Medium" size:15.0]}];
     
 }
 

@@ -29,9 +29,9 @@
     NSLog(@"View loaded!");
     
     self.h = 1;
-    self.m = 20;
+    self.m = 10;
     
-    self.clockTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(runClock) userInfo:nil repeats:YES];
+    self.clockTimer = [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(runClock) userInfo:nil repeats:YES];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -67,9 +67,7 @@
     
     
     
-    self.clockView = [[Draw2DView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
-    [self.clockView setH:self.h];
-    [self.clockView setM:self.m];
+    self.clockView = [[Draw2DView alloc] initClockWithFrame:CGRectMake(0, 120, 150, 300) andHours:self.h andMiuntes:self.m];
     [self.clockView setBackgroundColor:[UIColor whiteColor]];
     
     
